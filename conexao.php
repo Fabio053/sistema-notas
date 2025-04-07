@@ -2,7 +2,7 @@
 // conexao.php
 $servidor = "localhost";
 $usuario = "root";
-$senha = "root";
+$senha = "123456789";
 $banco = "sistema_notas";
 
 $conn = new mysqli($servidor, $usuario, $senha, $banco);

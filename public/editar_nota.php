@@ -37,38 +37,7 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Nota Fiscal</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        .form-group label {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        .btn-primary {
-            width: 100%;
-            padding: 10px;
-            font-size: 1.1rem;
-        }
-    </style>
+
 </head>
 <body>
     <div class="form-container">
@@ -128,16 +97,12 @@ $stmt->close();
                 <input type="date" class="form-control" id="protocolo" name="protocolo" value="<?= htmlspecialchars($nota['protocolo'] ?? '')?>">
             </div>
     <!--todo criar campo de observação--> 
-
-            <button type="submit" class="btn btn-primary">Atualizar Nota</button>
+ 
+            <button type="submit">Atualizar Nota</button>
+            <button type="button" onclick="window.location.href='listar_notas.php'" style="background: #0977d8; color: white; margin-left: 10px;">Voltar</button>
         </form>
     </div>
 
-    <!-- Botão de voltar -->
-    <button onclick="window.location.href='listar_notas.php'">Voltar</button>
-
-    <!-- Bootstrap JS (opcional, se precisar de funcionalidades JS) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

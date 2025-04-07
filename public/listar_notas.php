@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 
 require_once '../conexao.php';
 
-// Consulta SQL ajustada para ordenar os status
+// Consulta SQL para ordenar os status
 $sql = "SELECT 
             id,
             responsavel,
@@ -69,125 +69,98 @@ if (!$result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Notas Fiscais</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 22px;
-        }
-        .btn-nova-nota {
-            background-color: #27ae60;
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .btn-nova-nota:hover {
-            background-color: #219150;
-        }
-        table {
-            width: 95%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #34495e;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .status {
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .status-pendente-requisicao {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .status-pendente-pedido{
-            background-color: #ffce33;
-            color: white;
-        }
-
-        .status-pendente-protocolo {
-            background-color: #ff9933;
-            color: white;
-        }
-
-        .status-ok {
-            background-color: #2ecc71;
-            color: white;
-        }
-        .acoes a {
-            text-decoration: none;
-            padding: 5px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .editar {
-            background-color: #0977d8;
-            color: white;
-            padding: 7px 10px;
-            border-radius: 5px;
-        }
-        .editar:hover {
-            background-color: #93b2cd;
-        }
-        .sem-registros {
-            text-align: center;
-            font-size: 18px;
-            color: #555;
-        }
-        @media (max-width: 768px) {
-            table {
-                width: 100%;
-                font-size: 14px;
-            }
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .btn-nova-nota {
-                margin-top: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/modal.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Gestão de Notas Fiscais</h1>
-        <a href="formulario.php" class="btn-nova-nota">➕ Nova Nota</a>
-        <a href="calendario.php" class="btn-nova-nota" style="background-color: #3498db;">📅
-            Calendário</a>
-    </div>
+<div class="header">
+    <h1>Gestão de Notas Fiscais</h1>
+    <!-- Alterado para abrir o modal -->
+    <a href="#" id="btn-modal" class="btn-nova-nota">➕ Nova Nota</a>
+    <a href="calendario.php" class="btn-cal" style="background-color: #3498db;">📅 Calendário</a>
+</div>
 
-    <?php if ($result->num_rows > 0): ?>
-        <table>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="close-modal" class="close">&times;</span>
+        <div id="modal-body">
+            <!-- O conteúdo do formulário será inserido aqui via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Seleciona o contêiner da tabela onde os botões de editar estão localizados
+    const tabela = document.querySelector('table tbody');
+    
+    tabela.addEventListener('click', function(event) {
+        if (event.target && event.target.matches('button.editar')) {
+            event.preventDefault();
+            
+            // Obtém o ID da nota fiscal do atributo data-id
+            const idNota = event.target.getAttribute('data-id');
+            
+            // Carrega o conteúdo de editar_nota.php dentro do modal
+            fetch(`editar_nota.php?id=${idNota}`)
+                .then(response => response.text())
+                .then(data => {
+                    // Insere o conteúdo de editar_nota.php dentro do modal-body
+                    document.getElementById('modal-body').innerHTML = data;
+                    
+                    // Exibe o modal
+                    document.getElementById('modal').style.display = 'block';
+                    
+                    // Desabilita a rolagem da página
+                    document.body.classList.add('no-scroll');
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar o formulário de edição:', error);
+                    document.getElementById('modal-body').innerHTML = '<p>Erro ao carregar o formulário de edição.</p>';
+                    document.getElementById('modal').style.display = 'block';
+                });
+        }
+    });
+
+    // Abre o modal para adicionar nova nota
+    document.getElementById('btn-modal').addEventListener('click', function(event) {
+        event.preventDefault(); // Impede a navegação padrão
+
+        // Carrega o conteúdo de formulario.php dentro do modal
+        fetch('formulario.php')
+            .then(response => response.text())
+            .then(data => {
+                // Insere o conteúdo dentro do modal-body
+                document.getElementById('modal-body').innerHTML = data;
+                
+                // Exibe o modal
+                document.getElementById('modal').style.display = 'block';
+                
+                // Desabilita a rolagem da página
+                document.body.classList.add('no-scroll');
+            })
+            .catch(error => {
+                console.error('Erro ao carregar o formulário:', error);
+                document.getElementById('modal-body').innerHTML = '<p>Erro ao carregar o formulário.</p>';
+                document.getElementById('modal').style.display = 'block';
+            });
+    });
+
+    // Fechar o modal se clicar fora da área do modal
+    window.addEventListener('click', function(event) {
+        if (event.target === document.getElementById('modal')) {
+            document.getElementById('modal').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }
+    });
+});
+
+
+</script>
+
+<table>
             <thead>
                 <tr>
                     <th>Responsável</th>
@@ -241,15 +214,13 @@ if (!$result) {
                         </div>
                     </td>
                     <td>
-                        <a href="editar_nota.php?id=<?= $row['id'] ?>" class="acoes editar">✏️</a>
+                        <button class="acoes editar" data-id="<?= $row['id'] ?>">✏️</button>
                     </td>
+
                 </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
-    <?php else: ?>
-        <p class="sem-registros">Nenhuma nota fiscal cadastrada.</p>
-    <?php endif; ?>
 
 </body>
 </html>

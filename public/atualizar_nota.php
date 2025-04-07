@@ -92,6 +92,6 @@ try {
 }
 
 $conn->close();
-header("Location: editar_nota.php?id=$id");
+header("Location: listar_notas.php?id=$id");
 exit();
 ?>

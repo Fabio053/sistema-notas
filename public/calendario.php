@@ -108,7 +108,6 @@ $conn->close();
 </head>
 <body>
     <div class="header">
-        <h1>Calendário de Notas Fiscais</h1>
         <a href="listar_notas.php" style="background-color: #0977d8; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin: 10px; display: inline-block;">🔙 Voltar</a>
     </div>
 

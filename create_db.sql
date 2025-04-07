@@ -53,3 +53,5 @@ DELETE FROM notas_fiscais WHERE numero_nota LIKE 'NF-TEST%';
 
 -- Verificar estrutura final da tabela
 SHOW CREATE TABLE notas_fiscais;
+
+ALTER TABLE notas_fiscais ADD COLUMN data_vencimento DATE NULL;
