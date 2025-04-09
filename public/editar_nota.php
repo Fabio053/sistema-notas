@@ -99,7 +99,7 @@ $stmt->close();
     <!--todo criar campo de observação--> 
  
             <button type="submit">Atualizar Nota</button>
-            <button type="button" onclick="window.location.href='listar_notas.php'" style="background: #0977d8; color: white; margin-left: 10px;">Voltar</button>
+            <button type="button" onclick="window.location.href='index.php'" style="background: #0977d8; color: white; margin-left: 10px;">Voltar</button>
         </form>
     </div>
 

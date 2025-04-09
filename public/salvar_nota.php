@@ -116,6 +116,6 @@ try {
 }
 
 $conn->close();
-header("Location: listar_notas.php?msg=" . urlencode($_SESSION['msg']));
+header("Location: index.php?msg=" . urlencode($_SESSION['msg']));
 exit();
 ?>
