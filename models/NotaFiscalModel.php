@@ -20,33 +20,48 @@ class NotaFiscalModel {
                     numero_requisicao,
                     numero_pedido,
                     protocolo,
-                    status_nota,
                     CASE
                         WHEN (TRIM(COALESCE(numero_requisicao, '')) = '' 
-                            AND TRIM(COALESCE(numero_pedido, '')) = '' 
-                            AND protocolo IS NULL) 
-                        THEN 1
+                              AND TRIM(COALESCE(numero_pedido, '')) = '' 
+                              AND protocolo IS NULL) 
+                            THEN 'Requisição Pendente'
                         WHEN (TRIM(COALESCE(numero_requisicao, '')) != '' 
-                            AND TRIM(COALESCE(numero_pedido, '')) = '' 
-                            AND protocolo IS NULL) 
-                        THEN 2
+                              AND TRIM(COALESCE(numero_pedido, '')) = '' 
+                              AND protocolo IS NULL) 
+                            THEN 'Pedido Pendente'
                         WHEN (TRIM(COALESCE(numero_requisicao, '')) != '' 
-                            AND TRIM(COALESCE(numero_pedido, '')) != '' 
-                            AND protocolo IS NULL) 
-                        THEN 3
+                              AND TRIM(COALESCE(numero_pedido, '')) != '' 
+                              AND protocolo IS NULL) 
+                            THEN 'Protocolo Pendente'
+                        ELSE 'OK'
+                    END AS status_nota,
+                    CASE
+                        WHEN (TRIM(COALESCE(numero_requisicao, '')) = '' 
+                              AND TRIM(COALESCE(numero_pedido, '')) = '' 
+                              AND protocolo IS NULL) 
+                            THEN 1
+                        WHEN (TRIM(COALESCE(numero_requisicao, '')) != '' 
+                              AND TRIM(COALESCE(numero_pedido, '')) = '' 
+                              AND protocolo IS NULL) 
+                            THEN 2
+                        WHEN (TRIM(COALESCE(numero_requisicao, '')) != '' 
+                              AND TRIM(COALESCE(numero_pedido, '')) != '' 
+                              AND protocolo IS NULL) 
+                            THEN 3
                         ELSE 4
                     END AS prioridade_status
                 FROM notas_fiscais
                 ORDER BY prioridade_status ASC, data_emissao DESC";
-
+    
         $result = $this->conn->query($sql);
-
+    
         if (!$result) {
             die("Erro na consulta: " . $this->conn->error);
         }
-
+    
         return $result;
     }
+    
 
     public function inserirNota($dados) {
         $stmt = $this->conn->prepare("INSERT INTO notas_fiscais 

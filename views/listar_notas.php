@@ -1,3 +1,18 @@
+<?php
+function getStatusClass($status) {
+    switch (trim($status)) {
+        case 'Requisição Pendente':
+            return 'status status-pendente-requisicao';
+        case 'Pedido Pendente':
+            return 'status status-pendente-pedido';
+        case 'Protocolo Pendente':
+            return 'status status-pendente-protocolo';
+        case 'OK':
+        default:
+            return 'status status-ok';
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,28 +21,51 @@
     <title>Gestão de Notas Fiscais</title>
     <link rel="stylesheet" href="../assets/style.css">
     <link rel="stylesheet" href="../assets/modal.css">
+    <style>
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status-pendente-requisicao {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .status-pendente-pedido {
+            background-color: #ffce33;
+            color: white;
+        }
+
+        .status-pendente-protocolo {
+            background-color: #ff9933;
+            color: white;
+        }
+
+        .status-ok {
+            background-color: #2ecc71;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 
 <div class="header">
     <h1>Gestão de Notas Fiscais</h1>
-    <!-- Link para adicionar nova nota -->
     <a href="#" id="btn-modal" class="btn-nova-nota">➕ Nova Nota</a>
     <a href="../public/calendario.php" class="btn-cal" style="background-color: #3498db;">📅 Calendário</a>
 </div>
 
-<!-- Modal -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <span id="close-modal" class="close">&times;</span>
-        <div id="modal-body">
-            <!-- O conteúdo do formulário será inserido aqui via JavaScript -->
-        </div>
+        <div id="modal-body"></div>
     </div>
 </div>
 
 <script>
-    // Script para gerenciar o modal de edição e criação de notas
     document.addEventListener('DOMContentLoaded', function () {
         const tabela = document.querySelector('table tbody');
 
@@ -55,7 +93,6 @@
             event.preventDefault();
 
             fetch('index.php?action=formulario')
-
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('modal-body').innerHTML = data;
@@ -105,7 +142,19 @@
             <td><?= $row['numero_requisicao'] ? htmlspecialchars($row['numero_requisicao']) : 'N/A' ?></td>
             <td><?= $row['numero_pedido'] ? htmlspecialchars($row['numero_pedido']) : 'N/A' ?></td>
             <td><?= !empty($row['protocolo']) ? date('d/m/Y', strtotime($row['protocolo'])) : 'N/A' ?></td>
-            <td><?= $row['status_nota'] ?></td>
+            <?php
+                if (empty($row['numero_requisicao'])) {
+                    $status = 'Requisição Pendente';
+                } elseif (empty($row['numero_pedido'])) {
+                    $status = 'Pedido Pendente';
+                } elseif (empty($row['protocolo'])) {
+                    $status = 'Protocolo Pendente';
+                } else {
+                    $status = 'OK';
+                }
+            ?>
+            <td><span class="<?= getStatusClass($status) ?>"><?= $status ?></span></td>
+
             <td>
                 <button class="acoes editar" data-id="<?= $row['id'] ?>">✏️</button>
             </td>
